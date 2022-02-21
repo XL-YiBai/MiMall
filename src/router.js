@@ -20,7 +20,7 @@ export default new Router({
       name: 'home',
       component: Home,
       redirect: '/index',
-      // home的所有子路由都复用了home组件加载的navheader和navfooter，只需要关注对应逻辑开发
+      // home的所有子路由都复用了home组件加载的头部navheader和底部navfooter，从而只需要关注对应逻辑开发
       children: [
         {
           path: '/index',
