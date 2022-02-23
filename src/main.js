@@ -5,7 +5,7 @@ import App from './App.vue'
 // import env from './env'
 
 // mock开关
-const mock = true;
+const mock = false;
 if (mock) {
   // 这里不能在顶部用import引入，因为import是预编译加载，这样发请求就永远被拦截，我们希望mock开关关闭时不被拦截
   require('./mock/api');
