@@ -142,13 +142,11 @@ export default {
       this.axios.get('/products', {
         params: {
           categoryId: '100012', // 数据库中手机类的id
-          // pageSize: 6
+          // 返回的手机数据可能大于6个，我们最多只需要6条数据渲染到页面
+          pageSize: 6
         }
       }).then((res) => {
-        // 返回的手机数据可能大于6个，我们最多只需要6条数据渲染到页面
-        if (res.list.length > 6) {
-          this.phoneList = res.list.slice(0, 6);
-        }
+        this.phoneList = res.list
       })
     },
     goToCart() {
@@ -250,6 +248,7 @@ export default {
               box-shadow: 0px 7px 6px 0px rgba(0, 0, 0, 0.11);
               z-index: 10;
               transition: all .5s;
+              background-color: #ffffff;
               .product {
                 position: relative;
                 float: left;
