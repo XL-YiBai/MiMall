@@ -187,9 +187,10 @@ export default {
       this.axios.get('/products', {
         params: {
           categoryId: 100012,
-          pageSize: 8
+          pageSize: 14
         }
       }).then((res) => {
+        res.list = res.list.slice(6, 14);
         // 返回的8条数据生成两行四列的二维数组
         this.phoneList = [res.list.slice(0,4), res.list.slice(4,8)];
       })
