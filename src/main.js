@@ -23,12 +23,16 @@ axios.defaults.timeout = 8000; // 超时时间
 axios.interceptors.response.use(function(response) {
   // 获取接口返回值
   let res = response.data;
+  let path = location.hash; // 获取当前页面路由
   // 和后端协调：status为0表示正确
   if (res.status == 0) {
     return res.data;
   } else if(res.status == 10) { // 没登陆时接口报错，status为10
-    // 没有登录的话就跳转到登录页面
-    window.location.href = '/#/login';
+    if (path != '#/index') { // 只有在非首页页面才拦截跳转
+      // 没有登录的话就跳转到登录页面
+      window.location.href = '/#/login';
+    }
+    
   } else { // 其他错误，弹出错误信息
     alert(res.msg);
     // 返回一个失败的Promise，避免发axios发生错误时进入then()方法中成功的回调
