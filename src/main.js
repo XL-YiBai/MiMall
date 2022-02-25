@@ -2,6 +2,7 @@ import Vue from 'vue'
 import router from './router'
 import axios from 'axios'
 import VueLazyload from 'vue-lazyload'
+import VueCookie from 'vue-cookie'
 import App from './App.vue'
 // import env from './env'
 
@@ -30,10 +31,14 @@ axios.interceptors.response.use(function(response) {
     window.location.href = '/#/login';
   } else { // 其他错误，弹出错误信息
     alert(res.msg);
+    // 返回一个失败的Promise，避免发axios发生错误时进入then()方法中成功的回调
+    return Promise.reject(res); 
   }
 })
 
 Vue.prototype.axios = axios;
+
+Vue.use(VueCookie);
 Vue.use(VueLazyload, {
   loading: '/imgs/loading-svg/loading-bars.svg'
 });
