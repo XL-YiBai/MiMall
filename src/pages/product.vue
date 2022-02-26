@@ -5,11 +5,25 @@
         <button class="btn">立即购买</button>
       </template>
     </product-param>
+    <div class="h">123</div>
+    <div class="h">123</div>
+    <div class="h">123</div>
+    <div class="h">123</div>
+    <div class="h">123</div>
+    <div class="h">123</div>
+    <div class="h">123</div>
+    <div class="h">123</div>
+    <div class="h">123</div>
+    <div class="h">123</div>
+    <div class="h">123</div>
+    <div class="h">123</div>
+    <div class="h">123</div>
+    <div class="h">123</div>
   </div>
 </template>
 
 <script>
-import ProductParam from '../components/ProduectParam.vue'
+import ProductParam from '../components/ProductParam.vue'
 export default {
   name: 'product',
   components: { ProductParam }
@@ -18,6 +32,10 @@ export default {
 
 <style lang="scss">
   .product {
+    .h {
+      background-color: green;
+      height: 150px;
+    }
     button {
       margin-left: 10px;
     }
