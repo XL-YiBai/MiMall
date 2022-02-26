@@ -10,7 +10,7 @@
       <a href="https://juejin.cn/user/4117039159453656" target="_blank">微信: 18373787571</a><span>|</span>
       <a href="https://juejin.cn/user/4117039159453656" target="_blank">电话: 18373787571</a>
     </div>
-    <div class="copyright">Copyright ©2020 <span class="domain">mi.futurefe.com</span> All Rights Reserved.</div>
+    <div class="copyright">Copyright ©2022 <span class="domain">mi.futurefe.com</span> All Rights Reserved.</div>
   </div>
 </template>
 
