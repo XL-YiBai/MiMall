@@ -21,13 +21,13 @@ export default {
   methods: {
     // 获取用户信息
     getUser() {
-      this.axios.get('/user').then((res) => {
+      this.axios.get('/user').then((res={}) => {
         this.$store.dispatch('saveUserName', res.username);
       })
     },
     // 获取商品购物车数量
     getCartCount() {
-      this.axios.get('/carts/products/sum').then((res) => {
+      this.axios.get('/carts/products/sum').then((res=0) => {
         this.$store.dispatch('saveCartCount', res);
       })
     }
