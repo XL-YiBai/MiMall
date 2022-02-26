@@ -12,7 +12,7 @@
           <a href="javascript:;" v-if="username">{{username}}</a>
           <a href="javascript:;" v-if="!username" @click="login">登录</a>
           <a href="javascript:;" v-if="username">我的订单</a>
-          <a href="javascript:;" class="my-cart" @click="goToCart"><span class="icon-cart"></span>购物车</a>
+          <a href="javascript:;" class="my-cart" @click="goToCart"><span class="icon-cart"></span>购物车({{cartCount}})</a>
         </div>
       </div>
     </div>
@@ -115,14 +115,25 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: 'nav-header',
   data() {
     return {
-      username: '',
       phoneList: []
     }
   },
+  computed: {
+      // username不能放在data中，因为组件比axios请求先加载，此时用户信息还没返回，获取的是undefined，无法正常显示
+      // 采用computed，当用户信息拉取回来改变username时，computed会执行，从而渲染
+      // username() {
+      //   return this.$store.state.username;
+      // },
+      // cartCount() {
+      //   return this.$store.state.cartCount;
+      // }
+      ...mapState(['username', 'cartCount'])
+    },
   // 定义局部过滤器
   filters: {
     currency(val) {

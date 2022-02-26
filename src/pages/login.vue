@@ -38,6 +38,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
   name: 'login',
   data() {
@@ -57,10 +58,12 @@ export default {
       }).then((res) => {
         // 设置名为userId的cookie，值为用户id，过期时间1个月
         this.$cookie.set('userId', res.id, {expires: '1M'});
-        // to-do 保存用户名
+        // this.$store.dispatch('saveUserName', res.username);
+        this.saveUserName(res.username);
         this.$router.push('/index');
       })
     },
+    ...mapActions(['saveUserName']),
     register() {
       this.axios.post('/user/register', {
         username: 'yibai',
