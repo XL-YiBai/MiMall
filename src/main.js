@@ -33,7 +33,7 @@ axios.interceptors.response.use(function(response) {
       // 没有登录的话就跳转到登录页面
       window.location.href = '/#/login';
     }
-    
+    return Promise.reject(res); 
   } else { // 其他错误，弹出错误信息
     alert(res.msg);
     // 返回一个失败的Promise，避免发axios发生错误时进入then()方法中成功的回调
