@@ -124,16 +124,16 @@ export default {
     }
   },
   computed: {
-      // username不能放在data中，因为组件比axios请求先加载，此时用户信息还没返回，获取的是undefined，无法正常显示
-      // 采用computed，当用户信息拉取回来改变username时，computed会执行，从而渲染
-      // username() {
-      //   return this.$store.state.username;
-      // },
-      // cartCount() {
-      //   return this.$store.state.cartCount;
-      // }
-      ...mapState(['username', 'cartCount'])
-    },
+    // username不能放在data中，因为组件比axios请求先加载，此时用户信息还没返回，获取的是undefined，无法正常显示
+    // 采用computed，当用户信息拉取回来改变username时，computed会执行，从而渲染
+    // username() {
+    //   return this.$store.state.username;
+    // },
+    // cartCount() {
+    //   return this.$store.state.cartCount;
+    // }
+    ...mapState(['username', 'cartCount'])
+  },
   // 定义局部过滤器
   filters: {
     currency(val) {
