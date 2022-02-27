@@ -15,8 +15,11 @@ export default {
     }
   },
   mounted() {
-    this.getUser();
-    this.getCartCount();
+    // 判断是否是登录状态，登陆状态才获取用户和购物车信息
+    if (this.$cookie.get('userId')) {
+      this.getUser();
+      this.getCartCount();
+    }
   },
   methods: {
     // 获取用户信息
