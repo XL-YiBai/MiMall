@@ -56,11 +56,17 @@ export default {
         username,
         password
       }).then((res) => {
-        // 设置名为userId的cookie，值为用户id，过期时间1个月
-        this.$cookie.set('userId', res.id, {expires: '1M'});
+        // 设置名为userId的cookie，值为用户id，过期为Session会话级别，浏览器关掉(而不是页签关掉)就过期
+        this.$cookie.set('userId', res.id, {expires: 'Session'});
         // this.$store.dispatch('saveUserName', res.username);
         this.saveUserName(res.username);
-        this.$router.push('/index');
+        this.$router.push({
+          name: 'index',
+          params: { // 传参告诉index页面这个跳转不是因为浏览器刷新而是由于登录，
+          // 从而使index调用接口获取购物车数量，而刷新不会调用接口，避免刷新index和App.vue调用两次接口浪费资源
+            from: 'login'
+          }
+        });
       })
     },
     ...mapActions(['saveUserName']),
@@ -70,7 +76,7 @@ export default {
         password: 'yibai',
         email: 'yibai@163.com'
       }).then(() => {
-        alert('注册成功');
+        this.$message.success('注册成功');
       })
     }
   }
