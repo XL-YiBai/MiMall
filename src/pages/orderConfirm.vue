@@ -101,6 +101,52 @@
       </div>
     </div>
     <modal
+      title="新增确认"
+      btnType="1"
+      :showModal="showEditModal"
+      @cancel="showEditModal=false"
+      @submit="submitAddress"
+    >
+      <template v-slot:body>
+        <div class="edit-wrap">
+          <div class="item">
+            <input type="text" class="input" placeholder="姓名">
+            <input type="text" class="input" placeholder="手机号">
+          </div>
+          <div class="item">
+            <!-- 省份 -->
+            <select name="province">
+              <option value="北京">北京</option>
+              <option value="天津">天津</option>
+              <option value="河北">河北</option>
+            </select>
+            <!-- 市 -->
+            <select name="city">
+              <option value="北京">北京</option>
+              <option value="天津">天津</option>
+              <option value="河北">石家庄</option>
+            </select>
+            <!-- 区 -->
+            <select name="district">
+              <option value="北京">昌平区</option>
+              <option value="天津">海淀区</option>
+              <option value="河北">东城区</option>
+              <option value="河北">西城区</option>
+              <option value="河北">顺义区</option>
+              <option value="河北">房山区</option>
+            </select>
+          </div>
+          <div class="item">
+            <!-- 街道 -->
+            <textarea name="street" placeholder="详细地址"></textarea>
+          </div>
+          <div class="item">
+            <input type="text" class="input" placeholder="邮编">
+          </div>
+        </div>
+      </template>
+    </modal>
+    <modal
       title="删除确认"
       btnType="1"
       :showModal="showDelModal"
@@ -128,6 +174,7 @@ export default {
       checkedItem: {}, // 选中的地址的对象
       userAction: '', // 用户行为 0: 新增、1: 编辑、2: 删除
       showDelModal: false, // 是否显示删除的弹框
+      showEditModal: true, // 是否显示新增或者编辑弹框
     }
   },
   mounted() {
@@ -336,33 +383,34 @@ export default {
         }
       }
     }
-    .edit-wrap{
-      font-size:14px;
-      .item{
-        margin-bottom:15px;
-        .input{
-          display:inline-block;
-          width:283px;
-          height:40px;
-          line-height:40px;
-          padding-left:15px;
-          border:1px solid #E5E5E5;
-          &+.input{
-            margin-left:14px;
+    .edit-wrap {
+      font-size: 14px;
+      .item {
+        margin-bottom: 15px;
+        .input {
+          display: inline-block;
+          width: 283px;
+          height: 40px;
+          line-height: 40px;
+          padding-left: 15px;
+          border: 1px solid #E5E5E5;
+          &+.input { // 兄弟元素
+            margin-left: 14px;
           }
         }
-        select{
-          height:40px;
-          line-height:40px;
-          border:1px solid #E5E5E5;
-          margin-right:15px;
+        select {
+          height: 40px;
+          line-height: 40px;
+          border: 1px solid #E5E5E5;
+          margin-right: 15px;
         }
-        textarea{
-          height:62px;
-          width:100%;
-          padding:13px 15px;
-          box-sizing:border-box;
-          border:1px solid #E5E5E5;
+        textarea {
+          font-size: 14px;
+          height: 62px;
+          width: 100%;
+          border: 1px solid #E5E5E5;
+          padding: 13px 15px;
+          box-sizing: border-box;
         }
       }
     }
