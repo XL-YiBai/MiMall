@@ -18,7 +18,7 @@
           <div class="item-detail" v-if="showDetail">
             <div class="item">
               <div class="detail-title">订单号：</div>
-              <div class="detail-info theme-color">{{orderNo}}</div>
+              <div class="detail-info theme-color">{{orderId}}</div>
             </div>
             <div class="item">
               <div class="detail-title">收货信息：</div>
@@ -52,20 +52,25 @@
         </div>
       </div>
     </div>
-    <!-- <scan-pay-code v-if="showPay"></scan-pay-code> -->
+    <scan-pay-code v-if="showPay" @close="closePayModal" :img="payImg"></scan-pay-code>
   </div>
 </template>
 
 <script>
+import QRCode from 'qrcode'
+import ScanPayCode from '../components/ScanPayCode.vue'
 export default {
   name: 'order-pay',
+  components: { ScanPayCode },
   data() {
     return {
-      orderNo: this.$route.query.orderNo, // 订单号
+      orderId: this.$route.query.orderNo, // 订单号
       addressInfo: '', // 收货人 地址信息
       orderDetail: [], // 订单详情，包含了商品列表
       showDetail: false, // 是否显示订单详情
       payType: '', // 支付类型
+      showPay: false, // 是否显示微信支付弹框
+      payImg: '' // 微信支付的二维码地址
     }
   },
   mounted() {
@@ -74,7 +79,7 @@ export default {
   methods: {
     // 获取订单详情
     getOrderDetail() {
-      this.axios.get(`/orders/${this.orderNo}`).then((res) => {
+      this.axios.get(`/orders/${this.orderId}`).then((res) => {
         let item = res.shippingVo; // 收获人和地址信息
         // 拼接收货人和地址信息
         this.addressInfo = `${item.receiverName} ${item.receiverMobile} ${item.receiverProvince} ${item.receiverCity} ${item.receiverDistrict} ${item.receiverAddress}`
@@ -84,8 +89,27 @@ export default {
     paySubmit(payType) {
       if (payType == 1) {
         // 第一个参数为url，第二个参数_blank指定新窗口打开
-        window.open('/#/order/alipay?orderId=' + this.orderNo, '_blank');
+        window.open('/#/order/alipay?orderId=' + this.orderId, '_blank');
+      } else {
+        this.axios.post('/pay', {
+          orderId: this.orderId,
+          orderName: '忆白商城',
+          amount: 0.01, // 金额默认0.01元
+          payType:2 // 1支付宝，2微信
+        }).then((res) => {
+          // 通过QRCode插件把接收到的微信支付地址参数转换为base64的图片
+          QRCode.toDataURL(res.content).then(url => {
+            this.showPay = true; // 弹出微信支付框
+            this.payImg = url; // 保存转换的图片到payImg
+          }).catch(() => {
+            this.$message.error('微信二维码生成失败，请稍后重试')
+          })
+        })
       }
+    },
+    // 关闭微信支付弹框
+    closePayModal() {
+      this.showPay = false;
     }
   },
 }
