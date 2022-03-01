@@ -11,7 +11,7 @@
               <p>收货信息：{{addressInfo}}</p>
             </div>
             <div class="order-total">
-              <p>应付总额：<span>2599</span>元</p>
+              <p>应付总额：<span>{{payment}}</span>元</p>
               <p>订单详情<em class="icon-down" :class="{'up': showDetail}" @click="showDetail=!showDetail"></em></p>
             </div>
           </div>
@@ -53,15 +53,29 @@
       </div>
     </div>
     <scan-pay-code v-if="showPay" @close="closePayModal" :img="payImg"></scan-pay-code>
+    <modal
+      title="支付确认"
+      btnType="3"
+      :showModal="showPayModal"
+      sureText="是，查看订单"
+      cancelText="未支付"
+      @cancel="showPayModal=false"
+      @submit="goOrderList"
+    >
+      <template v-slot:body>
+        <p>请确认是否完成支付？</p>
+      </template>
+    </modal>
   </div>
 </template>
 
 <script>
 import QRCode from 'qrcode'
 import ScanPayCode from '../components/ScanPayCode.vue'
+import Modal from '../components/Modal.vue'
 export default {
   name: 'order-pay',
-  components: { ScanPayCode },
+  components: { ScanPayCode, Modal },
   data() {
     return {
       orderId: this.$route.query.orderNo, // 订单号
@@ -70,7 +84,10 @@ export default {
       showDetail: false, // 是否显示订单详情
       payType: '', // 支付类型
       showPay: false, // 是否显示微信支付弹框
-      payImg: '' // 微信支付的二维码地址
+      payImg: '', // 微信支付的二维码地址
+      showPayModal: false, // 显示是否支付确认的二次弹框
+      payment: 0, // 订单总金额
+      T: '', // 轮询定时器setInterval的ID
     }
   },
   mounted() {
@@ -84,6 +101,7 @@ export default {
         // 拼接收货人和地址信息
         this.addressInfo = `${item.receiverName} ${item.receiverMobile} ${item.receiverProvince} ${item.receiverCity} ${item.receiverDistrict} ${item.receiverAddress}`
         this.orderDetail = res.orderItemVoList; // 订单详情，每个购买的商品列表
+        this.payment = res.payment;
       })  
     },
     paySubmit(payType) {
@@ -101,6 +119,7 @@ export default {
           QRCode.toDataURL(res.content).then(url => {
             this.showPay = true; // 弹出微信支付框
             this.payImg = url; // 保存转换的图片到payImg
+            this.loopOrderState(); // 开启轮询，间隔一定时间查看用户是否完成支付
           }).catch(() => {
             this.$message.error('微信二维码生成失败，请稍后重试')
           })
@@ -109,7 +128,23 @@ export default {
     },
     // 关闭微信支付弹框
     closePayModal() {
-      this.showPay = false;
+      this.showPay = false; // 关闭微信二维码支付弹框
+      this.showPayModal = true; // 显示是否已经支付的弹框
+      clearInterval(this.T); 
+    },
+    // 定时循环查询订单是否支付，如果查询已经支付，就直接跳转订单列表页面
+    loopOrderState() {
+      this.T = setInterval(() => {
+        this.axios.get(`/orders/${this.orderId}`).then((res) => {
+          if (res.status == 20) {
+            clearInterval(this.T); 
+            this.goOrderList(); // 跳转订单列表页面
+          }
+        })
+      }, 1000)
+    },
+    goOrderList() {
+      this.$router.push('/order/list');
     }
   },
 }
