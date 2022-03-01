@@ -41,6 +41,10 @@ axios.interceptors.response.use(function(response) {
     // 返回一个失败的Promise，避免发axios发生错误时进入then()方法中成功的回调
     return Promise.reject(res); 
   }
+}, (error) => {
+  let res = error.response;
+  Message.error(res.data.message);
+  return Promise.reject(error);
 })
 
 Vue.prototype.axios = axios;
