@@ -1,15 +1,21 @@
 <template>
   <div class="ali-pay">
+    <order-header title="订单支付">
+      <template v-slot:tip>
+        <span>请谨防钓鱼链接或诈骗电话，了解更多</span>
+      </template>
+    </order-header>
     <loading v-if="loading"></loading>
     <div class="form" v-html="content"></div>
   </div>
 </template>
 
 <script>
+import OrderHeader from '../components/OrderHeader.vue'
 import Loading from '../components/Loading.vue'
 export default {
   name: 'alipay',
-  components: { Loading },
+  components: { Loading, OrderHeader },
   data() {
     return {
       orderId: this.$route.query.orderId,
