@@ -46,6 +46,15 @@
               </div>
             </div>
           </div>
+          <el-pagination
+            class="pagination"
+            background
+            layout="prev, pager, next"
+            :pageSize="pageSize"
+            :total="total"
+            @current-change="handleChange"
+          >
+          </el-pagination>
           <no-data v-if="!loading && list.length==0"></no-data>
         </div>
       </div>
@@ -57,13 +66,23 @@
 import OrderHeader from '../components/OrderHeader.vue'
 import Loading from '../components/Loading.vue'
 import NoData from '../components/NoData.vue'
+import { Pagination } from 'element-ui'
 export default {
   name: 'order-list',
-  components: { OrderHeader, Loading, NoData },
+  components: { 
+    OrderHeader, 
+    Loading, 
+    NoData, 
+    // 使用[]包裹，动态加载变量，会自动解析为字符串
+    [Pagination.name]: Pagination 
+  },
   data() {
     return {
       loading: true,
-      list: [], 
+      list: [], // 订单列表
+      pageSize: 10, // 一页展示10条
+      pageNum: 1, // 当前默认是第一页
+      total: 0 // 订单总数
     }
   },
   mounted() {
@@ -71,9 +90,14 @@ export default {
   },
   methods: {
     getOrderList() {
-      this.axios.get('/orders').then((res) => {
+      this.axios.get('/orders', {
+        params: {
+          pageNum: this.pageNum
+        }
+      }).then((res) => {
         this.loading = false;
         this.list = res.list;
+        this.total = res.total
       }).catch(() => {
         this.loading = false;
       })
@@ -93,6 +117,10 @@ export default {
           orderNo
         }
       })
+    },
+    handleChange(pageNum) {
+      this.pageNum = pageNum;
+      this.getOrderList();
     }
   }
 }
