@@ -56,8 +56,15 @@
             @current-change="handleChange"
           >
           </el-pagination>
-          <div class="load-more">
+          <div class="load-more" v-if="showNextPage">
             <el-button type="primary" :loading="loading" @click="loadMore">加载更多</el-button>
+          </div>
+          <div class="scroll-more" 
+            v-infinite-scroll="scrollMore"
+            infinite-scroll-disabled="busy"
+            infinite-scroll-distance="410"
+          >
+            <img src="/imgs/loading-svg/loading-spinning-bubbles.svg" alt="" v-show="loading">
           </div>
           <no-data v-if="!loading && list.length==0"></no-data>
         </div>
@@ -71,6 +78,7 @@ import OrderHeader from '../components/OrderHeader.vue'
 import Loading from '../components/Loading.vue'
 import NoData from '../components/NoData.vue'
 import { Button, Pagination } from 'element-ui'
+import infiniteScroll from 'vue-infinite-scroll'
 export default {
   name: 'order-list',
   components: { 
@@ -81,13 +89,18 @@ export default {
     [Pagination.name]: Pagination,
     [Button.name]: Button
   },
+  directives: {
+    infiniteScroll
+  },
   data() {
     return {
       loading: false,
       list: [], // 订单列表
       pageSize: 10, // 一页展示10条
       pageNum: 1, // 当前默认是第一页
-      total: 0 // 订单总数
+      total: 0, // 订单总数
+      showNextPage: true, // 是否显示加载更多按钮
+      busy: false, // 滚动加载，是否触发
     }
   },
   mounted() {
@@ -96,6 +109,7 @@ export default {
   methods: {
     getOrderList() {
       this.loading = true;
+      this.busy = true;
       this.axios.get('/orders', {
         params: {
           pageSize: 10,
@@ -104,7 +118,9 @@ export default {
       }).then((res) => {
         this.loading = false;
         this.list = this.list.concat(res.list);
-        this.total = res.total
+        this.total = res.total;
+        this.showNextPage = res.hasNextPage;
+        this.busy = false;
       }).catch(() => {
         this.loading = false;
       })
@@ -125,14 +141,42 @@ export default {
         }
       })
     },
+    // 第一种分页方法：分页器
     handleChange(pageNum) {
       this.pageNum = pageNum;
       this.getOrderList();
     },
+    // 第二种分页方法：加载更多按钮
     loadMore() {
       this.pageNum++;
       this.getOrderList();
-    }
+    },
+    // 第三种分页方法：滚动加载，通过npm插件实现
+    scrollMore() {
+      this.busy = true;
+      setTimeout(() => {
+        this.pageNum++;
+        this.getList();
+      }, 500);
+    },
+    // 专门给scrollMore使用
+    getList() {
+      this.loading = true;
+      this.axios.get('/orders', {
+        params: {
+          pageSize: 10,
+          pageNum: this.pageNum
+        }
+      }).then((res) => {
+        this.list = this.list.concat(res.list);
+        this.loading = false;
+        if (res.hasNextPage) {
+          this.busy = false;
+        } else {
+          this.busy = true;
+        }
+      })
+    },
   }
 }
 </script>

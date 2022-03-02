@@ -33,7 +33,7 @@
               <div class="addr-info" :class="{'checked': index == checkIndex}" @click="checkIndex = index" v-for="(item, index) in list" :key="index">
                 <h2>{{item.receiverName}}</h2>
                 <div class="phone">{{item.receiverMobile}}</div>
-                <div class="street">{{item.receiverProvince + ' ' + item.receiverCity + ' ' + item.receiverDistrict + ' ' + item.receiverAddress}}<br>东大街地铁</div>
+                <div class="street">{{item.receiverProvince + ' ' + item.receiverCity + ' ' + item.receiverDistrict + ' ' + item.receiverAddress}}</div>
                 <div class="action">
                   <a href="javascript:;" class="fl" @click="delAddress(item)">
                     <svg class="icon icon-del"><use xlink:href="#icon-del"></use></svg>
